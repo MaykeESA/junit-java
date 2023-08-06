@@ -1,45 +1,48 @@
 package br.com.alura.tdd.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 import br.com.alura.tdd.modelo.Funcionario;
 
 class BonusServiceTest {
 
+	private LocalDate data;
+	private BigDecimal salario;
+	private BonusService bonusService;
+
+	public void inicializar(BigDecimal salario) {
+		this.data = LocalDate.now();
+		this.salario = salario;
+		this.bonusService = new BonusService();
+	}
+	
 	@Test
 	public void bonusDeveriaSerZeroParaFuncionarioComSalarioMuitoAlto() {
-		BonusService bonusService = new BonusService();
+		this.inicializar(new BigDecimal("10500"));
 		
-		LocalDate data = LocalDate.now();
-		BigDecimal salario = new BigDecimal("10500");
-		BigDecimal bonus = bonusService.calcularBonus(new Funcionario("Mayke", data, salario));
-		
-		Assert.assertEquals(new BigDecimal("0.00"), bonus);
+		assertThrows(IllegalArgumentException.class, 
+				() -> bonusService.calcularBonus(new Funcionario("Mayke", this.data, this.salario)));
 	}
 
 	@Test
 	public void bonusDeveriaSerDe10PorcentoDoSalario() {
-		BonusService bonusService = new BonusService();
+		this.inicializar(new BigDecimal("2500"));
+		BigDecimal bonus = bonusService.calcularBonus(new Funcionario("Mayke", this.data, this.salario));
 		
-		LocalDate data = LocalDate.now();
-		BigDecimal salario = new BigDecimal("2500");
-		BigDecimal bonus = bonusService.calcularBonus(new Funcionario("Mayke", data, salario));
-		
-		Assert.assertEquals(new BigDecimal("250.00"), bonus);
+		assertEquals(new BigDecimal("250.00"), bonus);
 	}
 	
 	@Test
 	public void bonusDeveriaSer1000DoSalario10000() {
-		BonusService bonusService = new BonusService();
+		this.inicializar(new BigDecimal("10000"));		
+		BigDecimal bonus = bonusService.calcularBonus(new Funcionario("Mayke", this.data, this.salario));
 		
-		LocalDate data = LocalDate.now();
-		BigDecimal salario = new BigDecimal("10000");
-		BigDecimal bonus = bonusService.calcularBonus(new Funcionario("Mayke", data, salario));
-		
-		Assert.assertEquals(new BigDecimal("1000.00"), bonus);
+		assertEquals(new BigDecimal("1000.00"), bonus);
 	}
 }

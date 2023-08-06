@@ -1,49 +1,47 @@
 package br.com.alura.tdd.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import br.com.alura.tdd.modelo.Funcionario;
 import br.com.alura.tdd.service.enums.DesempenhoEnum;
 
 public class ReajusteServiceTest {
 
+	private ReajusteService service;
+	private LocalDate data;
+	private Funcionario func;
+
+	@BeforeEach
+	public void inicializar() {
+		this.service = new ReajusteService();
+		this.data = LocalDate.now();
+		this.func = new Funcionario("Mayke", this.data, new BigDecimal("100"));
+	}
+	
 	@Test
 	public void reajusteCasoODesepenhoSeja20PorCento() {
-		ReajusteService service = new ReajusteService();
+		service.reajusteAnual(this.func, DesempenhoEnum.A);
 		
-		LocalDate data = LocalDate.now();
-		Funcionario func = new Funcionario("Mayke", data, new BigDecimal("100"));
-		
-		service.reajusteAnual(func, DesempenhoEnum.A);
-		
-		Assert.assertEquals(new BigDecimal("120.00"), func.getSalario());
+		assertEquals(new BigDecimal("120.00"), func.getSalario());
 	}
 	
 	@Test
 	public void reajusteCasoODesepenhoSeja15PorCento() {
-		ReajusteService service = new ReajusteService();
-		
-		LocalDate data = LocalDate.now();
-		Funcionario func = new Funcionario("Mayke", data, new BigDecimal("100"));
-		
 		service.reajusteAnual(func, DesempenhoEnum.B);
 		
-		Assert.assertEquals(new BigDecimal("115.00"), func.getSalario());
+		assertEquals(new BigDecimal("115.00"), func.getSalario());
 	}
 	
 	@Test
 	public void reajusteCasoODesepenhoSeja3PorCento() {
-		ReajusteService service = new ReajusteService();
-		
-		LocalDate data = LocalDate.now();
-		Funcionario func = new Funcionario("Mayke", data, new BigDecimal("100"));
-		
 		service.reajusteAnual(func, DesempenhoEnum.C);
 		
-		Assert.assertEquals(new BigDecimal("103.00"), func.getSalario());
+		assertEquals(new BigDecimal("103.00"), func.getSalario());
 	}
 }
